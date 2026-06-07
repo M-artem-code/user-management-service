@@ -30,9 +30,28 @@ export const loginUserSchema = object({
   }),
 });
 
+export const userIdParamSchema = object({
+  params: object({
+    id: string({ required_error: 'User id is required' }).uuid('Invalid user id'),
+  }),
+});
+
+export const listUsersSchema = object({
+  query: object({
+    page: string()
+      .regex(/^\d+$/, 'page must be a positive integer')
+      .optional(),
+    limit: string()
+      .regex(/^\d+$/, 'limit must be a positive integer')
+      .optional(),
+  }),
+});
+
 export type RegisterUserInput = Omit<
   TypeOf<typeof registerUserSchema>['body'],
   'passwordConfirm'
 >;
 
 export type LoginUserInput = TypeOf<typeof loginUserSchema>['body'];
+
+export type ListUsersQuery = TypeOf<typeof listUsersSchema>['query'];

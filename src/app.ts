@@ -1,10 +1,10 @@
-import express, { NextFunction, Request, Response } from 'express';
+import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
 import authRouter from './routes/auth.routes';
 import userRouter from './routes/user.routes';
-import AppError from './utils/appError';
+import { errorHandler, notFoundHandler } from './middleware/errorHandler';
 
 const app = express();
 
@@ -23,17 +23,10 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ERROR
-app.all('*', (req: Request, _res: Response, next: NextFunction) => {
-  next(new AppError(404, `Route ${req.originalUrl} not found`));
-});
+// 404
+app.all('*', notFoundHandler);
 
 // ERROR HANDLER
-app.use((err: AppError, _req: Request, res: Response, _next: NextFunction) => {
-  res.status(err.statusCode || 500).json({
-    status: err.status || 'error',
-    message: err.message,
-  });
-});
+app.use(errorHandler);
 
 export default app;

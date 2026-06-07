@@ -10,6 +10,10 @@ import { assertCanAccessUser } from '../utils/permissions';
 
 type CurrentUser = { id: string; role: string };
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_LIMIT = 20;
+const MAX_LIMIT = 100;
+
 export const getUserById = async (currentUser: CurrentUser, targetId: string) => {
   assertCanAccessUser(currentUser, targetId);
 
@@ -22,7 +26,28 @@ export const getUserById = async (currentUser: CurrentUser, targetId: string) =>
   return user;
 };
 
-export const getAllUsers = () => findAllUsers();
+export const getAllUsers = async (params: { page?: string; limit?: string }) => {
+  const page = Math.max(DEFAULT_PAGE, Number(params.page) || DEFAULT_PAGE);
+  const limit = Math.min(
+    MAX_LIMIT,
+    Math.max(1, Number(params.limit) || DEFAULT_LIMIT)
+  );
+
+  const { users, total } = await findAllUsers({
+    skip: (page - 1) * limit,
+    take: limit,
+  });
+
+  return {
+    users,
+    pagination: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit) || 1,
+    },
+  };
+};
 
 export const blockUser = async (currentUser: CurrentUser, targetId: string) => {
   assertCanAccessUser(currentUser, targetId);

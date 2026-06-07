@@ -7,6 +7,8 @@ import {
 import { deserializeUser } from '../middleware/deserializeUser';
 import { requireUser } from '../middleware/requireUser';
 import { restrictTo } from '../middleware/restrictTo';
+import { validate } from '../middleware/validate';
+import { listUsersSchema, userIdParamSchema } from '../schemas/user.schema';
 
 const router = express.Router();
 
@@ -14,12 +16,12 @@ const router = express.Router();
 router.use(deserializeUser, requireUser);
 
 // GET /api/users — только админ
-router.get('/', restrictTo('admin'), getAllUsersHandler);
+router.get('/', restrictTo('admin'), validate(listUsersSchema), getAllUsersHandler);
 
 // GET /api/users/:id — админ или сам пользователь
-router.get('/:id', getUserHandler);
+router.get('/:id', validate(userIdParamSchema), getUserHandler);
 
 // PATCH /api/users/:id/block — админ или сам пользователь
-router.patch('/:id/block', blockUserHandler);
+router.patch('/:id/block', validate(userIdParamSchema), blockUserHandler);
 
 export default router;

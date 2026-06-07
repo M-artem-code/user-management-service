@@ -19,16 +19,20 @@ export const getUserHandler = async (
 };
 
 export const getAllUsersHandler = async (
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const users = await userService.getAllUsers();
+    const { users, pagination } = await userService.getAllUsers({
+      page: req.query.page as string | undefined,
+      limit: req.query.limit as string | undefined,
+    });
 
     res.status(200).json({
       status: 'success',
       results: users.length,
+      pagination,
       data: { users },
     });
   } catch (err) {
