@@ -1,5 +1,10 @@
-import 'dotenv/config';
+import dotenv from 'dotenv';
 import { defineConfig } from 'prisma/config';
+
+// override: true so values from .env always win over any stale/empty
+// DATABASE_URL already present in the shell/system environment (dotenv does not
+// override existing env vars by default). Mirrors src/load-env.ts.
+dotenv.config({ override: true });
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
