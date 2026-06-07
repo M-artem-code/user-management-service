@@ -7,8 +7,10 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: user_management
+    # Host port 5433 to avoid clashing with a native PostgreSQL that may already
+    # occupy 5432 on the developer machine. Container still listens on 5432.
     ports:
-      - '5432:5432'
+      - '5433:5432'
     volumes:
       - ums_pgdata:/var/lib/postgresql/data
     healthcheck:

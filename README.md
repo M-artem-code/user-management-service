@@ -40,8 +40,11 @@ npm install
 cp .env.example .env
 # заполните DATABASE_URL и JWT_* в .env
 
-# вариант с Docker для локального Postgres:
+# вариант с Docker для локального Postgres (хост-порт 5433, чтобы не конфликтовать
+# с нативным PostgreSQL на 5432):
 docker compose up -d db
+# затем в .env:
+# DATABASE_URL="postgresql://postgres:postgres@localhost:5433/user_management"
 
 npm run db:migrate
 npm run dev
