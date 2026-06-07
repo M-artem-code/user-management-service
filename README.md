@@ -116,7 +116,9 @@ POST /api/auth/register
   "birthDate": "1990-05-15",
   "email": "user@example.com",
   "password": "password123",
-  "passwordConfirm": "password123",
-  "role": "user"
+  "passwordConfirm": "password123"
 }
 ```
+
+> Роль всегда назначается сервером (`user`). Передать `role` при регистрации нельзя —
+> это закрывает возможность привилегированной эскалации.

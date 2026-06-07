@@ -32,15 +32,7 @@ const signTokens = (user: Pick<User, 'id'>) => {
 };
 
 export const register = async (input: RegisterUserInput) => {
-  const {
-    lastName,
-    firstName,
-    middleName,
-    birthDate,
-    email,
-    password,
-    role,
-  } = input;
+  const { lastName, firstName, middleName, birthDate, email, password } = input;
 
   try {
     const hashedPassword = await hashPassword(password);
@@ -53,7 +45,6 @@ export const register = async (input: RegisterUserInput) => {
         birthDate: new Date(birthDate),
         email: email.toLowerCase(),
         password: hashedPassword,
-        ...(role !== undefined ? { role } : {}),
       },
       publicUserSelect
     );
