@@ -9,6 +9,7 @@ import { requireUser } from '../middleware/requireUser';
 import { restrictTo } from '../middleware/restrictTo';
 import { validate } from '../middleware/validate';
 import { listUsersSchema, userIdParamSchema } from '../schemas/user.schema';
+import { ROLES } from '../constants/roles';
 
 const router = express.Router();
 
@@ -18,7 +19,7 @@ router.use(deserializeUser, requireUser);
 // GET /api/users — только админ
 router.get(
   '/',
-  restrictTo('admin'),
+  restrictTo(ROLES.admin),
   validate(listUsersSchema),
   getAllUsersHandler
 );

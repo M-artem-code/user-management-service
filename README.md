@@ -18,10 +18,12 @@ src/
   controllers/      # HTTP-адаптеры (req/res), без бизнес-логики
   services/         # use cases: register, login, block, права доступа
   repositories/     # Prisma CRUD, работа с БД
-  constants/        # select-поля, настройки cookies
-  utils/            # JWT, пароли, cookies, permissions
+  constants/        # select-поля, настройки cookies, роли (single source)
+  utils/            # JWT, пароли, cookies, permissions, env, duration
   schemas/          # Zod-схемы входных данных
-  middleware/       # deserializeUser, requireUser, restrictTo
+  middleware/       # deserializeUser, requireUser, restrictTo, errorHandler
+  types/            # общие типы (CurrentUser, express augmentation)
+tests/              # Vitest + Supertest (без реальной БД)
 ```
 
 | Слой             | Ответственность                                        |
@@ -37,11 +39,18 @@ src/
 npm install
 cp .env.example .env
 # заполните DATABASE_URL и JWT_* в .env
+
+# вариант с Docker для локального Postgres:
+docker compose up -d db
+
 npm run db:migrate
 npm run dev
 ```
 
 Сервер по умолчанию: `http://localhost:8000`
+
+> Переменные окружения проверяются при старте через Zod (`src/utils/validateEnv.ts`):
+> при отсутствии/некорректности значений сервер не запустится с понятной ошибкой.
 
 ## Переменные окружения
 
@@ -58,13 +67,31 @@ npm run dev
 
 ## Скрипты
 
-| Команда              | Описание                   |
-| -------------------- | -------------------------- |
-| `npm run dev`        | Запуск в режиме разработки |
-| `npm run build`      | Сборка TypeScript          |
-| `npm start`          | Запуск production-сборки   |
-| `npm run db:migrate` | Миграции (dev)             |
-| `npm run db:deploy`  | Миграции (production)      |
+| Команда                 | Описание                      |
+| ----------------------- | ----------------------------- |
+| `npm run dev`           | Запуск в режиме разработки    |
+| `npm run build`         | Сборка TypeScript (в `dist/`) |
+| `npm start`             | Запуск production-сборки      |
+| `npm run typecheck`     | Проверка типов без эмита      |
+| `npm run lint`          | ESLint                        |
+| `npm run lint:fix`      | ESLint с автоисправлением     |
+| `npm run format`        | Prettier (запись)             |
+| `npm run format:check`  | Prettier (проверка)           |
+| `npm test`              | Тесты (Vitest)                |
+| `npm run test:watch`    | Тесты в watch-режиме          |
+| `npm run test:coverage` | Тесты с покрытием             |
+| `npm run db:migrate`    | Миграции (dev)                |
+| `npm run db:deploy`     | Миграции (production)         |
+
+## Тестирование и качество
+
+- **Тесты:** Vitest + Supertest. Покрывают auth-флоу, матрицу прав, валидацию,
+  пагинацию и маппинг ошибок. Работают без реальной БД (in-memory мок репозитория),
+  поэтому стабильно гоняются локально и в CI.
+- **CI:** GitHub Actions (`.github/workflows/ci.yml`) — lint, format:check,
+  typecheck, test, build на каждый push/PR.
+- **Ошибки API:** единый формат ответа через `errorHandler` (Zod / Prisma /
+  AppError / неизвестные ошибки), внутренние детали не утекают клиенту.
 
 ## API
 
@@ -89,6 +116,10 @@ npm run dev
 | `GET`   | `/api/users`           | Только `admin`               |
 | `GET`   | `/api/users/:id`       | `admin` или сам пользователь |
 | `PATCH` | `/api/users/:id/block` | `admin` или сам пользователь |
+
+`GET /api/users` поддерживает пагинацию: `?page=1&limit=20` (по умолчанию
+`page=1`, `limit=20`, максимум `limit=100`). В ответе — блок `pagination`
+с `page`, `limit`, `total`, `totalPages`. `:id` валидируется как UUID.
 
 ### Прочее
 

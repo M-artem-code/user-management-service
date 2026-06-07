@@ -7,8 +7,7 @@ import {
 } from '../repositories/user.repository';
 import AppError from '../utils/appError';
 import { assertCanAccessUser } from '../utils/permissions';
-
-type CurrentUser = { id: string; role: string };
+import { CurrentUser } from '../types/user';
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
