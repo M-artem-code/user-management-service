@@ -1,5 +1,5 @@
 import 'dotenv/config';
-import { defineConfig, env } from 'prisma/config';
+import { defineConfig } from 'prisma/config';
 
 export default defineConfig({
   schema: 'prisma/schema.prisma',
@@ -7,6 +7,10 @@ export default defineConfig({
     path: 'prisma/migrations',
   },
   datasource: {
-    url: env('DATABASE_URL'),
+    // Read directly from process.env (populated by dotenv) instead of prisma's
+    // env() helper, which throws at config-load time when DATABASE_URL is unset.
+    // This keeps `prisma generate` (postinstall / CI / fresh clones) working
+    // without a database, while migrate/runtime still pick up the real value.
+    url: process.env.DATABASE_URL ?? '',
   },
 });
