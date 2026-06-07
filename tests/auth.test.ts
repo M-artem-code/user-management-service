@@ -1,8 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import request from 'supertest';
 
-vi.mock('../src/repositories/user.repository', () =>
-  import('./fakeUserRepository')
+vi.mock(
+  '../src/repositories/user.repository',
+  () => import('./fakeUserRepository')
 );
 
 import app from '../src/app';
@@ -44,9 +45,9 @@ describe('POST /api/auth/register', () => {
     expect(res.body.status).toBe('fail');
     expect(res.body.message).toBe('Validation failed');
     expect(Array.isArray(res.body.errors)).toBe(true);
-    expect(res.body.errors.some((e: any) => e.path.includes('passwordConfirm'))).toBe(
-      true
-    );
+    expect(
+      res.body.errors.some((e: any) => e.path.includes('passwordConfirm'))
+    ).toBe(true);
   });
 
   it('rejects an invalid email with 400', async () => {

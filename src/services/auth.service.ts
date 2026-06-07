@@ -1,9 +1,6 @@
 import { Prisma, User } from '../../generated/prisma/client';
 import { publicUserSelect } from '../constants/user.select';
-import {
-  createUser,
-  findUniqueUser,
-} from '../repositories/user.repository';
+import { createUser, findUniqueUser } from '../repositories/user.repository';
 import { LoginUserInput, RegisterUserInput } from '../schemas/user.schema';
 import AppError from '../utils/appError';
 import { signJwt, verifyJwt } from '../utils/jwt';
@@ -16,17 +13,13 @@ const signTokens = (user: Pick<User, 'id'>) => {
   const refreshExpiresIn = (process.env.JWT_REFRESH_TOKEN_EXPIRES_IN ||
     '7d') as SignOptions['expiresIn'];
 
-  const access_token = signJwt(
-    { sub: user.id },
-    'accessTokenPrivateKey',
-    { expiresIn: accessExpiresIn }
-  );
+  const access_token = signJwt({ sub: user.id }, 'accessTokenPrivateKey', {
+    expiresIn: accessExpiresIn,
+  });
 
-  const refresh_token = signJwt(
-    { sub: user.id },
-    'refreshTokenPrivateKey',
-    { expiresIn: refreshExpiresIn }
-  );
+  const refresh_token = signJwt({ sub: user.id }, 'refreshTokenPrivateKey', {
+    expiresIn: refreshExpiresIn,
+  });
 
   return { access_token, refresh_token };
 };

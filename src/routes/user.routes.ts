@@ -16,7 +16,12 @@ const router = express.Router();
 router.use(deserializeUser, requireUser);
 
 // GET /api/users — только админ
-router.get('/', restrictTo('admin'), validate(listUsersSchema), getAllUsersHandler);
+router.get(
+  '/',
+  restrictTo('admin'),
+  validate(listUsersSchema),
+  getAllUsersHandler
+);
 
 // GET /api/users/:id — админ или сам пользователь
 router.get('/:id', validate(userIdParamSchema), getUserHandler);

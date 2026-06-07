@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import request from 'supertest';
 
-vi.mock('../src/repositories/user.repository', () =>
-  import('./fakeUserRepository')
+vi.mock(
+  '../src/repositories/user.repository',
+  () => import('./fakeUserRepository')
 );
 
 import app from '../src/app';

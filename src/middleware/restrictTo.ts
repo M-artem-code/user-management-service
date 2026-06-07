@@ -5,7 +5,7 @@ export const restrictTo =
   (...roles: string[]) =>
   (req: Request, res: Response, next: NextFunction) => {
     if (!roles.includes(res.locals.user.role)) {
-         return next(new AppError(403, 'You do not have permission'));
+      return next(new AppError(403, 'You do not have permission'));
     }
     next();
   };

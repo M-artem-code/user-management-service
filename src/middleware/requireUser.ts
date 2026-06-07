@@ -14,7 +14,7 @@ export const requireUser = (
     }
 
     next();
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 };

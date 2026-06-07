@@ -1,7 +1,7 @@
 import jwt, { SignOptions } from 'jsonwebtoken';
 
 export const signJwt = (
-  payload: Object,
+  payload: object,
   keyName: 'accessTokenPrivateKey' | 'refreshTokenPrivateKey',
   options: SignOptions
 ) => {

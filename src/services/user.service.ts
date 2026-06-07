@@ -14,7 +14,10 @@ const DEFAULT_PAGE = 1;
 const DEFAULT_LIMIT = 20;
 const MAX_LIMIT = 100;
 
-export const getUserById = async (currentUser: CurrentUser, targetId: string) => {
+export const getUserById = async (
+  currentUser: CurrentUser,
+  targetId: string
+) => {
   assertCanAccessUser(currentUser, targetId);
 
   const user = await findUniqueUser({ id: targetId }, publicUserSelect);
@@ -26,7 +29,10 @@ export const getUserById = async (currentUser: CurrentUser, targetId: string) =>
   return user;
 };
 
-export const getAllUsers = async (params: { page?: string; limit?: string }) => {
+export const getAllUsers = async (params: {
+  page?: string;
+  limit?: string;
+}) => {
   const page = Math.max(DEFAULT_PAGE, Number(params.page) || DEFAULT_PAGE);
   const limit = Math.min(
     MAX_LIMIT,

@@ -8,7 +8,7 @@ import {
 } from '../utils/cookies';
 
 export const registerUserHandler = async (
-  req: Request<{}, {}, RegisterUserInput>,
+  req: Request<Record<string, never>, unknown, RegisterUserInput>,
   res: Response,
   next: NextFunction
 ) => {
@@ -25,7 +25,7 @@ export const registerUserHandler = async (
 };
 
 export const loginUserHandler = async (
-  req: Request<{}, {}, LoginUserInput>,
+  req: Request<Record<string, never>, unknown, LoginUserInput>,
   res: Response,
   next: NextFunction
 ) => {
@@ -49,7 +49,9 @@ export const refreshAccessTokenHandler = async (
   next: NextFunction
 ) => {
   try {
-    const { access_token } = await authService.refresh(req.cookies.refresh_token);
+    const { access_token } = await authService.refresh(
+      req.cookies.refresh_token
+    );
 
     setAccessTokenCookie(res, access_token);
 

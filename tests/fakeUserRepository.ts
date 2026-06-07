@@ -27,7 +27,9 @@ export const seed = (overrides: Partial<StoredUser> = {}): StoredUser => {
     firstName: overrides.firstName ?? 'John',
     middleName: overrides.middleName ?? null,
     birthDate: overrides.birthDate ?? new Date('1990-01-01'),
-    email: (overrides.email ?? `user-${randomUUID()}@example.com`).toLowerCase(),
+    email: (
+      overrides.email ?? `user-${randomUUID()}@example.com`
+    ).toLowerCase(),
     password: overrides.password ?? 'hashed-password',
     role: overrides.role ?? 'user',
     isActive: overrides.isActive ?? true,
