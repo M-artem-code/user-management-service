@@ -12,7 +12,9 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ credentials: true, origin: process.env.CLIENT_URL }));
-app.use(morgan('dev'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
 
 // ROUTES
 app.use('/api/auth', authRouter);
